@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Web Sockets</title>
+
+  <script src="http://www.google.com/jsapi"></script>
+  <script>
+    google.load('jquery','1.3.2');
+  </script>
+
+  <script>
+    $(document).ready(function() {
+    
+      if ("WebSocket" in window) {
+        // var ws = new WebSocket("ws://localhost:9876");
+        var ws = new WebSocket("ws://localhost:8080/echo");
+        ws.onopen = function() { 
+          $('#connectionStatus').text('Connection opened');
+        };
+        ws.onmessage = function(evt) {
+          $('#output').append('<p>' + evt.data);
+        };
+        ws.onclose = function() {
+          $('#connectionStatus').text('Connection closed');
+        };
+        document.getElementById("clickMe").onclick = function() {
+           var message = document.getElementById("message").value;
+           ws.send(message);
+        };
+      }
+      else {
+        $('#connectionStatus').append('<p>Your browser does not support web sockets</p>');
+      }
+    });
+  </script>
+
+</head>
+<body>
+  <h1>I'm doing something</h1>
+
+  <div id="output">
+  </div>
+
+  <div id="connectionStatus">
+  </div>
+
+  <textarea rows="2" cols="80" id="message">
+    Type whatever you want here, but type quit to close the connection
+  </textarea>
+
+  <br/>
+
+  <button id="clickMe">
+    Click me!
+  </button> 
+</body>
+</html>

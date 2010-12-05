@@ -18,7 +18,6 @@ echoServlet req i o = do putStrLn "Got a WS request"
           echo = do putStrLn "echo"
                     readInput i >>= (writeOutput o . (++", miaow"))
 
-
 servlets :: [(String, Servlet)]
 servlets = [("/echo", webSocket echoServlet)
            ,("/*", fileServlet "www")

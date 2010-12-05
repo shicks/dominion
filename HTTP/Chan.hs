@@ -16,8 +16,7 @@ import Control.Concurrent.MVar ( MVar, newEmptyMVar, putMVar,
 import Control.Monad ( forever, when )
 import Data.Maybe ( isJust, catMaybes )
 import System.IO ( Handle, hPutStrLn, hGetLine )
-import Text.JSON ( JSValue )
--- import Text.JSON ( showJSValue, runGetJSON, readJSValue )
+import Text.JSON ( JSValue, Result(..), encode, decode )
 
 -- | Because 'Chan's are typed, we need to specify a wire protocol
 -- in order to interface them with the string-based 'Handle' IO.
@@ -45,9 +44,11 @@ class (Show a, Read a) => Serializable a where
 -- to look into use cases for when we ever actually close chans
 -- manually...?
 
--- instance Serializable JSValue where
---     showLine = showJSValue
---     readLine = either (const Nothing) Just . runGetJSON readJSValue
+instance Serializable JSValue where
+    showLine = encode
+    readLine x = case decode x of
+                   Ok a -> Just a
+                   Error _ -> Nothing
 
 instance Serializable String where
     showLine = id
